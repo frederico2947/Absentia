@@ -14,7 +14,7 @@ import { AuthService } from '../../../../core/services/auth.service';
 
 type Status = 'idle' | 'capturing' | 'saving' | 'done' | 'error';
 
-const REQUIRED_SAMPLES = 5;
+const REQUIRED_SAMPLES = 20;
 
 @Component({
   selector: 'app-face-register',
@@ -81,9 +81,9 @@ export class FaceRegister implements OnInit, OnDestroy {
     this.collectedDescriptors = [];
     this.sampleCount.set(0);
     this.status.set('capturing');
-    this.statusMessage.set('Look directly at the camera...');
+    this.statusMessage.set('Look directly at the camera, then slowly tilt left and right...');
 
-    this.captureInterval = setInterval(() => void this.captureSample(), 800);
+    this.captureInterval = setInterval(() => void this.captureSample(), 500);
   }
 
   private async captureSample(): Promise<void> {
@@ -99,7 +99,18 @@ export class FaceRegister implements OnInit, OnDestroy {
     this.collectedDescriptors.push(descriptor);
     const count = this.collectedDescriptors.length;
     this.sampleCount.set(count);
-    this.statusMessage.set(`Captured ${count} of ${REQUIRED_SAMPLES} samples...`);
+
+    // Guide user through poses to capture diverse samples
+    const quarter = Math.floor(REQUIRED_SAMPLES / 4);
+    if (count < quarter) {
+      this.statusMessage.set(`Look straight at the camera... (${count}/${REQUIRED_SAMPLES})`);
+    } else if (count < quarter * 2) {
+      this.statusMessage.set(`Slowly tilt your head left... (${count}/${REQUIRED_SAMPLES})`);
+    } else if (count < quarter * 3) {
+      this.statusMessage.set(`Slowly tilt your head right... (${count}/${REQUIRED_SAMPLES})`);
+    } else {
+      this.statusMessage.set(`Look straight again... (${count}/${REQUIRED_SAMPLES})`);
+    }
 
     if (count >= REQUIRED_SAMPLES) {
       this.stopCapture();
@@ -119,9 +130,13 @@ export class FaceRegister implements OnInit, OnDestroy {
     this.statusMessage.set('Saving your face data...');
 
     const descriptorsAsArrays = this.collectedDescriptors.map((d) => Array.from(d));
+    console.debug(`[FaceRegister] Saving ${descriptorsAsArrays.length} descriptors. First descriptor norm: ${
+      Math.sqrt(this.collectedDescriptors[0].reduce((s, v) => s + v * v, 0)).toFixed(4)
+    }`);
 
     this.attendanceService.saveFaceDescriptors(descriptorsAsArrays).subscribe({
       next: () => {
+        console.debug('[FaceRegister] ✓ Descriptors saved successfully');
         this.status.set('done');
         this.statusMessage.set('Face registered successfully! You can now use face recognition for attendance.');
       },

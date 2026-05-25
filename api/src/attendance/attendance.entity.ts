@@ -24,6 +24,15 @@ export class Attendance {
   @Column({ type: 'real', nullable: true })
   faceConfidence!: number | null;
 
+  @Column({ type: 'real', nullable: true })
+  latitude!: number | null;
+
+  @Column({ type: 'real', nullable: true })
+  longitude!: number | null;
+
+  @Column({ type: 'real', nullable: true })
+  distance!: number | null;
+
   @CreateDateColumn()
   timestamp!: Date;
 }

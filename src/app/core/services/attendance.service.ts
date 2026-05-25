@@ -8,6 +8,9 @@ export type AttendanceRecord = {
   userName: string;
   type: 'check-in' | 'check-out';
   faceConfidence: number | null;
+  latitude: number | null;
+  longitude: number | null;
+  distance: number | null;
   timestamp: string;
 };
 
@@ -27,10 +30,12 @@ export class AttendanceService {
   private readonly http = inject(HttpClient);
   private readonly API_URL = 'http://localhost:3000';
 
-  record(type: 'check-in' | 'check-out', faceConfidence?: number): Observable<AttendanceRecord> {
+  record(type: 'check-in' | 'check-out', faceConfidence?: number, latitude?: number, longitude?: number): Observable<AttendanceRecord> {
     return this.http.post<AttendanceRecord>(`${this.API_URL}/attendance`, {
       type,
       faceConfidence,
+      latitude,
+      longitude,
     });
   }
 

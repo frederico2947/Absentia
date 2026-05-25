@@ -7,36 +7,36 @@
 
 <!-- Stats -->
 <div class="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-  <div class="rounded-2xl bg-white p-5 shadow-sm shadow-slate-200/80">
-    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Total Days</p>
-    <p class="mt-2 text-3xl font-bold text-slate-800">{{ stats().totalDays }}</p>
-    <p class="mt-1 text-xs text-slate-400">This month</p>
+  <div class="rounded-2xl bg-white p-5 shadow-sm dark:bg-slate-900 dark:shadow-slate-950/50">
+    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Days</p>
+    <p class="mt-2 text-3xl font-bold text-slate-800 dark:text-slate-100">{{ stats().totalDays }}</p>
+    <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">This month</p>
   </div>
-  <div class="rounded-2xl bg-white p-5 shadow-sm shadow-slate-200/80">
-    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Present</p>
+  <div class="rounded-2xl bg-white p-5 shadow-sm dark:bg-slate-900 dark:shadow-slate-950/50">
+    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Present</p>
     <p class="mt-2 text-3xl font-bold text-emerald-600">{{ stats().presentDays }}</p>
-    <p class="mt-1 text-xs text-slate-400">Days on time</p>
+    <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">Days on time</p>
   </div>
-  <div class="rounded-2xl bg-white p-5 shadow-sm shadow-slate-200/80">
-    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Absent</p>
+  <div class="rounded-2xl bg-white p-5 shadow-sm dark:bg-slate-900 dark:shadow-slate-950/50">
+    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Absent</p>
     <p class="mt-2 text-3xl font-bold text-rose-500">{{ stats().absentDays }}</p>
-    <p class="mt-1 text-xs text-slate-400">Days missed</p>
+    <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">Days missed</p>
   </div>
-  <div class="rounded-2xl bg-white p-5 shadow-sm shadow-slate-200/80">
-    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">On Leave</p>
+  <div class="rounded-2xl bg-white p-5 shadow-sm dark:bg-slate-900 dark:shadow-slate-950/50">
+    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">On Leave</p>
     <p class="mt-2 text-3xl font-bold text-sky-500">{{ stats().leaveDays }}</p>
-    <p class="mt-1 text-xs text-slate-400">Days approved</p>
+    <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">Days approved</p>
   </div>
 </div>
 
 <div class="grid gap-6 lg:grid-cols-3">
   <!-- Quick actions -->
-  <div class="rounded-2xl bg-white p-5 shadow-sm shadow-slate-200/80">
-    <h3 class="mb-4 text-sm font-semibold text-slate-700">Quick Actions</h3>
+  <div class="rounded-2xl bg-white p-5 shadow-sm dark:bg-slate-900 dark:shadow-slate-950/50">
+    <h3 class="mb-4 text-sm font-semibold text-slate-700 dark:text-slate-200">Quick Actions</h3>
     <div class="space-y-3">
       <a
         routerLink="/attendance"
-        class="flex items-center gap-3 rounded-xl bg-sky-50 px-4 py-3 text-sm font-medium text-sky-700 transition hover:bg-sky-100"
+        class="flex items-center gap-3 rounded-xl bg-sky-50 px-4 py-3 text-sm font-medium text-sky-700 transition hover:bg-sky-100 dark:bg-sky-950/50 dark:text-sky-400 dark:hover:bg-sky-900/50"
       >
         <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" />
@@ -45,7 +45,7 @@
       </a>
       <a
         routerLink="/dashboard/leave"
-        class="flex items-center gap-3 rounded-xl bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 transition hover:bg-emerald-100"
+        class="flex items-center gap-3 rounded-xl bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 transition hover:bg-emerald-100 dark:bg-emerald-950/50 dark:text-emerald-400 dark:hover:bg-emerald-900/50"
       >
         <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" />
@@ -54,7 +54,7 @@
       </a>
       <a
         routerLink="/dashboard/profile"
-        class="flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
+        class="flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
       >
         <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round" stroke-linejoin="round" />
@@ -65,9 +65,9 @@
   </div>
 
   <!-- Recent attendance -->
-  <div class="rounded-2xl bg-white p-5 shadow-sm shadow-slate-200/80 lg:col-span-2">
+  <div class="rounded-2xl bg-white p-5 shadow-sm dark:bg-slate-900 dark:shadow-slate-950/50 lg:col-span-2">
     <div class="mb-4 flex items-center justify-between">
-      <h3 class="text-sm font-semibold text-slate-700">Recent Attendance</h3>
+      <h3 class="text-sm font-semibold text-slate-700 dark:text-slate-200">Recent Attendance</h3>
       <a routerLink="/attendance" class="text-xs font-medium text-sky-600 hover:text-sky-700">
         View all →
       </a>
@@ -75,19 +75,19 @@
     <div class="overflow-x-auto">
       <table class="w-full text-sm">
         <thead>
-          <tr class="border-b border-slate-100">
+          <tr class="border-b border-slate-100 dark:border-slate-800">
             <th class="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">Date</th>
             <th class="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">Check In</th>
             <th class="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">Check Out</th>
             <th class="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">Status</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-slate-50">
+        <tbody class="divide-y divide-slate-50 dark:divide-slate-800">
           @for (record of attendance; track record.date) {
-            <tr class="hover:bg-slate-50/50">
-              <td class="py-3 font-medium text-slate-700">{{ record.date | date: 'MMM d' }}</td>
-              <td class="py-3 text-slate-500">{{ record.checkIn }}</td>
-              <td class="py-3 text-slate-500">{{ record.checkOut }}</td>
+            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
+              <td class="py-3 font-medium text-slate-700 dark:text-slate-200">{{ record.date | date: 'MMM d' }}</td>
+              <td class="py-3 text-slate-500 dark:text-slate-400">{{ record.checkIn }}</td>
+              <td class="py-3 text-slate-500 dark:text-slate-400">{{ record.checkOut }}</td>
               <td class="py-3">
                 <span class="rounded-full px-2.5 py-1 text-xs font-semibold capitalize {{ statusClass(record.status) }}">
                   {{ record.status }}

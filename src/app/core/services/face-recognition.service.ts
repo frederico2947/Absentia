@@ -32,7 +32,7 @@ export class FaceRecognitionService {
   async detectSingleFace(input: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement) {
     if (!this.modelsLoaded()) return null;
     return faceapi
-      .detectSingleFace(input, new faceapi.TinyFaceDetectorOptions())
+      .detectSingleFace(input, new faceapi.TinyFaceDetectorOptions({ inputSize: 512, scoreThreshold: 0.4 }))
       .withFaceLandmarks(true)
       .withFaceDescriptor();
   }
@@ -49,13 +49,15 @@ export class FaceRecognitionService {
   ): faceapi.FaceMatcher | null {
     if (!labeledDescriptors.length) return null;
     const labeled = labeledDescriptors.map(
-      ({ id, descriptors }) =>
-        new faceapi.LabeledFaceDescriptors(
+      ({ id, name, descriptors }) => {
+        console.debug(`[FaceRecognition] Building matcher for "${name}" with ${descriptors.length} descriptors`);
+        return new faceapi.LabeledFaceDescriptors(
           id,
           descriptors.map((d) => new Float32Array(d)),
-        ),
+        );
+      },
     );
-    return new faceapi.FaceMatcher(labeled, 0.5);
+    return new faceapi.FaceMatcher(labeled, 0.72);
   }
 
   matchDescriptor(
@@ -75,6 +77,13 @@ export class FaceRecognitionService {
       distance: best.distance,
       confidence: Math.max(0, 1 - best.distance),
     };
+  }
+
+  getBestMatchDistance(
+    descriptor: Float32Array,
+    matcher: faceapi.FaceMatcher,
+  ): number {
+    return matcher.findBestMatch(descriptor).distance;
   }
 
   drawDetection(

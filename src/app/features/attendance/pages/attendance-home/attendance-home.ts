@@ -8,17 +8,18 @@ import {
   signal,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { DatePipe } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { FaceRecognitionService, FaceMatchResult } from '../../../../core/services/face-recognition.service';
 import { AttendanceService, TodayAttendance } from '../../../../core/services/attendance.service';
 import { AuthService } from '../../../../core/services/auth.service';
+import { GeolocationService } from '../../../../core/services/geolocation.service';
 import type * as faceapi from '@vladmandic/face-api';
 
 type PageStatus = 'loading' | 'no-face-registered' | 'ready' | 'verifying' | 'recording' | 'error';
 
 @Component({
   selector: 'app-attendance-home',
-  imports: [RouterLink, DatePipe],
+  imports: [RouterLink, DatePipe, DecimalPipe],
   templateUrl: './attendance-home.html',
   styleUrl: './attendance-home.scss',
 })
@@ -29,6 +30,7 @@ export class AttendanceHome implements OnInit, OnDestroy {
   private readonly faceService = inject(FaceRecognitionService);
   private readonly attendanceService = inject(AttendanceService);
   private readonly authService = inject(AuthService);
+  readonly geoService = inject(GeolocationService);
 
   private stream: MediaStream | null = null;
   private detectionLoop: ReturnType<typeof requestAnimationFrame> | null = null;
@@ -41,11 +43,15 @@ export class AttendanceHome implements OnInit, OnDestroy {
   readonly modelsLoaded = this.faceService.modelsLoaded;
   readonly cameraReady = signal(false);
   readonly faceMatch = signal<FaceMatchResult>(null);
+  readonly rawDistance = signal<number | null>(null);
   readonly todayAttendance = signal<TodayAttendance | null>(null);
   readonly today = new Date();
 
   async ngOnInit(): Promise<void> {
-    await this.faceService.loadModels();
+    await Promise.all([
+      this.faceService.loadModels(),
+      this.geoService.requestLocation(),
+    ]);
     this.loadTodayAttendance();
     await this.initFaceMatcher();
     await this.startCamera();
@@ -120,7 +126,7 @@ export class AttendanceHome implements OnInit, OnDestroy {
 
       const video = this.videoRef?.nativeElement;
       const canvas = this.canvasRef?.nativeElement;
-      if (!video || !canvas || !this.cameraReady()) {
+      if (!video || !canvas || !this.cameraReady() || video.readyState < 2) {
         this.detectionLoop = requestAnimationFrame(loop);
         return;
       }
@@ -129,11 +135,19 @@ export class AttendanceHome implements OnInit, OnDestroy {
       let match: FaceMatchResult = null;
 
       if (detection && this.faceMatcher) {
+        const dist = this.faceService.getBestMatchDistance(detection.descriptor, this.faceMatcher);
+        this.rawDistance.set(dist);
+        console.debug(`[FaceRecognition] Detected face — distance: ${dist.toFixed(4)} (threshold: 0.72)`);
         match = this.faceService.matchDescriptor(
           detection.descriptor,
           this.faceMatcher,
           this.allUsers,
         );
+        if (match) {
+          console.debug(`[FaceRecognition] ✓ Matched: ${match.name} (dist ${match.distance.toFixed(4)})`);
+        }
+      } else if (!detection) {
+        this.rawDistance.set(null);
       }
 
       this.faceMatch.set(match);
@@ -165,19 +179,23 @@ export class AttendanceHome implements OnInit, OnDestroy {
     this.status.set('recording');
     this.statusMessage.set('');
 
-    this.attendanceService.record(type, match.confidence).subscribe({
-      next: () => {
-        this.loadTodayAttendance();
-        this.status.set('ready');
-        this.statusMessage.set(`${type === 'check-in' ? 'Check-in' : 'Check-out'} recorded successfully!`);
-        setTimeout(() => this.statusMessage.set(''), 4000);
-      },
-      error: (err) => {
-        const message = err?.error?.message ?? `Failed to record ${type}.`;
-        this.statusMessage.set(message);
-        this.status.set('ready');
-      },
-    });
+    const pos = this.geoService.position();
+
+    this.attendanceService
+      .record(type, match.confidence, pos?.latitude, pos?.longitude)
+      .subscribe({
+        next: () => {
+          this.loadTodayAttendance();
+          this.status.set('ready');
+          this.statusMessage.set(`${type === 'check-in' ? 'Check-in' : 'Check-out'} recorded successfully!`);
+          setTimeout(() => this.statusMessage.set(''), 4000);
+        },
+        error: (err) => {
+          const message = err?.error?.message ?? `Failed to record ${type}.`;
+          this.statusMessage.set(message);
+          this.status.set('ready');
+        },
+      });
   }
 
   get canCheckIn(): boolean {
@@ -195,3 +213,4 @@ export class AttendanceHome implements OnInit, OnDestroy {
       this.status() === 'ready';
   }
 }
+

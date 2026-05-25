@@ -32,6 +32,15 @@ export const DASHBOARD_ROUTES: Routes = [
             (m) => m.AdminDashboard,
           ),
       },
+      {
+        path: 'settings',
+        canActivate: [roleGuard(['admin'])],
+        data: { title: 'Settings' },
+        loadComponent: () =>
+          import('./pages/settings/settings').then(
+            (m) => m.Settings,
+          ),
+      },
     ],
   },
 ];

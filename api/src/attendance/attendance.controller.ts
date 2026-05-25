@@ -25,7 +25,7 @@ export class AttendanceController {
     @Req() req: AuthenticatedRequest,
     @Body() dto: RecordAttendanceDto,
   ) {
-    return this.attendanceService.record(req.user.id, dto.type, dto.faceConfidence);
+    return this.attendanceService.record(req.user.id, dto.type, dto.faceConfidence, dto.latitude, dto.longitude);
   }
 
   @Get('me')

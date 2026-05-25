@@ -1,4 +1,4 @@
-<div class="flex h-screen overflow-hidden bg-slate-50">
+<div class="flex h-screen overflow-hidden bg-slate-50 dark:bg-slate-950">
   <!-- Mobile overlay -->
   @if (sidebarOpen()) {
     <div
@@ -7,7 +7,7 @@
     ></div>
   }
 
-  <!-- Sidebar -->
+  <!-- Sidebar (already dark) -->
   <aside
     [class]="sidebarOpen() ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
     class="fixed inset-y-0 left-0 z-30 flex w-64 shrink-0 flex-col bg-slate-900 transition-transform duration-300 ease-in-out lg:relative lg:z-auto"
@@ -96,10 +96,10 @@
   <!-- Main area -->
   <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
     <!-- Top header -->
-    <header class="flex h-16 shrink-0 items-center gap-4 border-b border-slate-200 bg-white px-4 lg:px-6">
+    <header class="flex h-16 shrink-0 items-center gap-4 border-b border-slate-200 bg-white px-4 dark:border-slate-800 dark:bg-slate-900 lg:px-6">
       <!-- Hamburger (mobile) -->
       <button
-        class="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 lg:hidden"
+        class="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 lg:hidden"
         (click)="sidebarOpen.set(!sidebarOpen())"
         aria-label="Toggle sidebar"
       >
@@ -108,9 +108,9 @@
         </svg>
       </button>
 
-      <h1 class="flex-1 text-lg font-semibold text-slate-800">{{ pageTitle() }}</h1>
+      <h1 class="flex-1 text-lg font-semibold text-slate-800 dark:text-slate-100">{{ pageTitle() }}</h1>
 
-      <time class="hidden text-sm text-slate-500 sm:block">
+      <time class="hidden text-sm text-slate-500 dark:text-slate-400 sm:block">
         {{ today | date: 'EEEE, MMMM d, y' }}
       </time>
     </header>

@@ -3,18 +3,18 @@
   <!-- Today's status cards -->
   <div class="grid gap-4 sm:grid-cols-2">
     <!-- Check-in card -->
-    <div class="rounded-2xl border bg-white p-5 shadow-sm"
-         [class]="todayAttendance()?.checkIn ? 'border-emerald-200' : 'border-slate-200'">
+    <div class="rounded-2xl border bg-white p-5 shadow-sm dark:bg-slate-900"
+         [class]="todayAttendance()?.checkIn ? 'border-emerald-200 dark:border-emerald-900' : 'border-slate-200 dark:border-slate-800'">
       <div class="flex items-center gap-3">
         <div class="flex h-10 w-10 items-center justify-center rounded-xl"
-             [class]="todayAttendance()?.checkIn ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-400'">
+             [class]="todayAttendance()?.checkIn ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-950/70' : 'bg-slate-100 text-slate-400 dark:bg-slate-800'">
           <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
         <div>
-          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Check-In</p>
-          <p class="mt-0.5 text-lg font-bold text-slate-800">
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Check-In</p>
+          <p class="mt-0.5 text-lg font-bold text-slate-800 dark:text-slate-100">
             {{ todayAttendance()?.checkIn ? (todayAttendance()!.checkIn!.timestamp | date:'HH:mm') : '—' }}
           </p>
         </div>
@@ -22,18 +22,18 @@
     </div>
 
     <!-- Check-out card -->
-    <div class="rounded-2xl border bg-white p-5 shadow-sm"
-         [class]="todayAttendance()?.checkOut ? 'border-sky-200' : 'border-slate-200'">
+    <div class="rounded-2xl border bg-white p-5 shadow-sm dark:bg-slate-900"
+         [class]="todayAttendance()?.checkOut ? 'border-sky-200 dark:border-sky-900' : 'border-slate-200 dark:border-slate-800'">
       <div class="flex items-center gap-3">
         <div class="flex h-10 w-10 items-center justify-center rounded-xl"
-             [class]="todayAttendance()?.checkOut ? 'bg-sky-100 text-sky-600' : 'bg-slate-100 text-slate-400'">
+             [class]="todayAttendance()?.checkOut ? 'bg-sky-100 text-sky-600 dark:bg-sky-950/70' : 'bg-slate-100 text-slate-400 dark:bg-slate-800'">
           <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
         <div>
-          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Check-Out</p>
-          <p class="mt-0.5 text-lg font-bold text-slate-800">
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Check-Out</p>
+          <p class="mt-0.5 text-lg font-bold text-slate-800 dark:text-slate-100">
             {{ todayAttendance()?.checkOut ? (todayAttendance()!.checkOut!.timestamp | date:'HH:mm') : '—' }}
           </p>
         </div>
@@ -43,14 +43,14 @@
 
   <!-- No face registered banner -->
   @if (status() === 'no-face-registered') {
-    <div class="rounded-2xl border border-amber-200 bg-amber-50 p-5">
+    <div class="rounded-2xl border border-amber-200 bg-amber-50 p-5 dark:border-amber-900 dark:bg-amber-950/40">
       <div class="flex items-start gap-3">
         <svg class="mt-0.5 h-5 w-5 shrink-0 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <div class="flex-1">
-          <p class="font-semibold text-amber-800">Face not registered</p>
-          <p class="mt-1 text-sm text-amber-700">You need to register your face before using face recognition attendance.</p>
+          <p class="font-semibold text-amber-800 dark:text-amber-300">Face not registered</p>
+          <p class="mt-1 text-sm text-amber-700 dark:text-amber-400">You need to register your face before using face recognition attendance.</p>
           <a
             routerLink="/attendance/register-face"
             class="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-amber-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-amber-700"
@@ -64,10 +64,10 @@
 
   <!-- Camera + face recognition -->
   @if (status() !== 'no-face-registered') {
-    <div class="rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <div class="border-b border-slate-100 px-6 py-4">
+    <div class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <div class="border-b border-slate-100 px-6 py-4 dark:border-slate-800">
         <div class="flex items-center justify-between">
-          <h3 class="font-semibold text-slate-800">Face Recognition</h3>
+          <h3 class="font-semibold text-slate-800 dark:text-slate-100">Face Recognition</h3>
           <a
             routerLink="/attendance/register-face"
             class="text-xs font-medium text-sky-600 hover:text-sky-700"
@@ -75,20 +75,53 @@
             Update face →
           </a>
         </div>
-        <p class="mt-0.5 text-xs text-slate-500">Face the camera to verify your identity, then check in or out.</p>
+        <p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">Face the camera to verify your identity, then check in or out.</p>
       </div>
 
       <div class="p-6 space-y-4">
 
         <!-- Models loading -->
         @if (!modelsLoaded()) {
-          <div class="flex items-center gap-3 rounded-xl border border-sky-100 bg-sky-50 px-4 py-3 text-sm text-sky-700">
+          <div class="flex items-center gap-3 rounded-xl border border-sky-100 bg-sky-50 px-4 py-3 text-sm text-sky-700 dark:border-sky-900 dark:bg-sky-950/40 dark:text-sky-400">
             <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke-linecap="round"/>
             </svg>
             Loading face recognition models...
           </div>
         }
+
+        <!-- Location status -->
+        <div class="flex items-center gap-2 rounded-xl border px-4 py-3 text-sm"
+          [class]="{
+            'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-400': geoService.status() === 'granted',
+            'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-400': geoService.status() === 'denied' || geoService.status() === 'unavailable',
+            'border-sky-100 bg-sky-50 text-sky-700 dark:border-sky-900 dark:bg-sky-950/40 dark:text-sky-400': geoService.status() === 'loading',
+            'border-slate-200 bg-slate-50 text-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400': geoService.status() === 'idle'
+          }"
+        >
+          @if (geoService.status() === 'loading') {
+            <svg class="h-4 w-4 shrink-0 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke-linecap="round"/>
+            </svg>
+            <span>Detecting location…</span>
+          } @else if (geoService.status() === 'granted') {
+            <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>
+              Location captured
+              @if (geoService.position()?.accuracy) {
+                <span class="ml-1 text-xs opacity-70">(±{{ geoService.position()!.accuracy | number:'1.0-0' }}m accuracy)</span>
+              }
+            </span>
+          } @else {
+            <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>{{ geoService.errorMessage() || 'Location not available' }}</span>
+          }
+        </div>
 
         <!-- Video feed -->
         <div class="relative mx-auto aspect-video w-full max-w-md overflow-hidden rounded-xl bg-slate-900">
@@ -120,6 +153,12 @@
               ✓ {{ faceMatch()!.name }} ({{ (faceMatch()!.confidence * 100).toFixed(0) }}%)
             </div>
           }
+          <!-- No match: show raw distance for debugging -->
+          @if (!faceMatch() && rawDistance() !== null) {
+            <div class="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-rose-600/90 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+              No match — dist: {{ rawDistance()!.toFixed(3) }} (need &lt; 0.72)
+            </div>
+          }
         </div>
 
         <!-- Status / feedback message -->
@@ -127,8 +166,8 @@
           <div
             class="rounded-xl px-4 py-3 text-sm"
             [class]="{
-              'border border-emerald-200 bg-emerald-50 text-emerald-700': status() === 'ready' && !statusMessage().includes('Failed') && !statusMessage().includes('does not'),
-              'border border-rose-200 bg-rose-50 text-rose-700': status() === 'error' || statusMessage().includes('Failed') || statusMessage().includes('does not')
+              'border border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-400': status() === 'ready' && !statusMessage().includes('Failed') && !statusMessage().includes('does not'),
+              'border border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-400': status() === 'error' || statusMessage().includes('Failed') || statusMessage().includes('does not')
             }"
           >
             {{ statusMessage() }}
@@ -143,7 +182,7 @@
             class="flex-1 rounded-xl px-4 py-3 text-sm font-semibold text-white transition disabled:cursor-not-allowed"
             [class]="canCheckIn
               ? 'bg-emerald-600 hover:bg-emerald-700'
-              : 'bg-emerald-300'"
+              : 'bg-emerald-300 dark:bg-emerald-900/50'"
           >
             @if (status() === 'recording') {
               <span class="inline-flex items-center justify-center gap-2">
@@ -163,7 +202,7 @@
             class="flex-1 rounded-xl px-4 py-3 text-sm font-semibold text-white transition disabled:cursor-not-allowed"
             [class]="canCheckOut
               ? 'bg-sky-600 hover:bg-sky-700'
-              : 'bg-sky-300'"
+              : 'bg-sky-300 dark:bg-sky-900/50'"
           >
             @if (status() === 'recording') {
               <span class="inline-flex items-center justify-center gap-2">
@@ -183,6 +222,12 @@
           <p class="text-center text-xs text-slate-400">
             Face the camera to enable check-in/check-out
           </p>
+          @if (rawDistance() !== null) {
+            <p class="text-center text-xs font-mono"
+               [class]="rawDistance()! < 0.72 ? 'text-emerald-500' : rawDistance()! < 0.85 ? 'text-amber-500' : 'text-rose-500'">
+              Distance: {{ rawDistance()!.toFixed(4) }} / 0.72 — {{ rawDistance()! < 0.72 ? '✓ match' : rawDistance()! < 0.85 ? '⚠ close, try re-register' : '✗ too far, re-register' }}
+            </p>
+          }
         }
       </div>
     </div>

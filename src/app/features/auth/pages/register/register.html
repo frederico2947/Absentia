@@ -1,19 +1,19 @@
-<div class="flex min-h-screen items-center justify-center bg-slate-100 px-4 py-10">
-  <div class="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl shadow-slate-200/60">
+<div class="flex min-h-screen items-center justify-center bg-slate-100 px-4 py-10 dark:bg-slate-950">
+  <div class="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl shadow-slate-200/60 dark:bg-slate-900 dark:shadow-slate-950/60">
     <div class="mb-8 text-center">
       <p class="text-sm font-semibold uppercase tracking-[0.3em] text-sky-600">Absentia</p>
-      <h1 class="mt-3 text-3xl font-bold text-slate-900">Create your account</h1>
-      <p class="mt-2 text-sm text-slate-500">Get started with attendance tracking in minutes.</p>
+      <h1 class="mt-3 text-3xl font-bold text-slate-900 dark:text-white">Create your account</h1>
+      <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">Get started with attendance tracking in minutes.</p>
     </div>
 
     <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-5">
       <div>
-        <label for="name" class="mb-2 block text-sm font-medium text-slate-700">Full name</label>
+        <label for="name" class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">Full name</label>
         <input
           id="name"
           type="text"
           formControlName="name"
-          class="block w-full rounded-xl border-slate-200 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-sky-500 focus:ring-sky-500"
+          class="block w-full rounded-xl border-slate-200 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-sky-500 focus:ring-sky-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
           placeholder="Jane Doe"
         />
         @if (form.controls.name.touched && form.controls.name.invalid) {
@@ -22,12 +22,12 @@
       </div>
 
       <div>
-        <label for="email" class="mb-2 block text-sm font-medium text-slate-700">Email</label>
+        <label for="email" class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">Email</label>
         <input
           id="email"
           type="email"
           formControlName="email"
-          class="block w-full rounded-xl border-slate-200 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-sky-500 focus:ring-sky-500"
+          class="block w-full rounded-xl border-slate-200 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-sky-500 focus:ring-sky-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
           placeholder="you@example.com"
         />
         @if (form.controls.email.touched && form.controls.email.invalid) {
@@ -36,12 +36,12 @@
       </div>
 
       <div>
-        <label for="password" class="mb-2 block text-sm font-medium text-slate-700">Password</label>
+        <label for="password" class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">Password</label>
         <input
           id="password"
           type="password"
           formControlName="password"
-          class="block w-full rounded-xl border-slate-200 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-sky-500 focus:ring-sky-500"
+          class="block w-full rounded-xl border-slate-200 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-sky-500 focus:ring-sky-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
           placeholder="••••••••"
         />
         @if (form.controls.password.touched && form.controls.password.invalid) {
@@ -50,12 +50,12 @@
       </div>
 
       <div>
-        <label for="confirmPassword" class="mb-2 block text-sm font-medium text-slate-700">Confirm password</label>
+        <label for="confirmPassword" class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">Confirm password</label>
         <input
           id="confirmPassword"
           type="password"
           formControlName="confirmPassword"
-          class="block w-full rounded-xl border-slate-200 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-sky-500 focus:ring-sky-500"
+          class="block w-full rounded-xl border-slate-200 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-sky-500 focus:ring-sky-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
           placeholder="••••••••"
         />
         @if (form.controls.confirmPassword.touched && form.hasError('passwordMismatch')) {
@@ -64,7 +64,7 @@
       </div>
 
       @if (errorMessage()) {
-        <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+        <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-800 dark:bg-rose-950/50 dark:text-rose-400">
           {{ errorMessage() }}
         </div>
       }
@@ -78,7 +78,7 @@
       </button>
     </form>
 
-    <p class="mt-6 text-center text-sm text-slate-500">
+    <p class="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
       Already have an account?
       <a routerLink="/auth/login" class="font-semibold text-sky-600 transition hover:text-sky-700">
         Sign in
