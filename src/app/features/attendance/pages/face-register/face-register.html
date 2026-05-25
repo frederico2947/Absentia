@@ -1,0 +1,169 @@
+<div class="mx-auto max-w-2xl space-y-6">
+
+  <!-- Header -->
+  <div>
+    <h2 class="text-2xl font-bold text-slate-800">Register Your Face</h2>
+    <p class="mt-1 text-sm text-slate-500">
+      We'll capture {{ requiredSamples }} samples of your face to enable face recognition for attendance.
+    </p>
+  </div>
+
+  <!-- Models loading -->
+  @if (loadingModels()) {
+    <div class="flex items-center gap-3 rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-700">
+      <svg class="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke-linecap="round"/>
+      </svg>
+      Loading face recognition models...
+    </div>
+  }
+
+  <!-- Main card -->
+  <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+
+    <!-- Camera area -->
+    <div class="relative mx-auto aspect-video w-full max-w-md overflow-hidden rounded-xl bg-slate-900">
+      <video
+        #video
+        autoplay
+        muted
+        playsinline
+        class="h-full w-full object-cover [transform:scaleX(-1)]"
+      ></video>
+      <canvas
+        #canvas
+        class="absolute inset-0 h-full w-full [transform:scaleX(-1)]"
+      ></canvas>
+
+      <!-- Face guide overlay -->
+      @if (status() === 'idle' || status() === 'capturing') {
+        <div class="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <div class="h-48 w-40 rounded-full border-2 border-dashed opacity-50"
+               [class]="status() === 'capturing' ? 'border-sky-400' : 'border-white'">
+          </div>
+        </div>
+      }
+
+      <!-- No camera overlay -->
+      @if (!cameraReady()) {
+        <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-slate-400">
+          <svg class="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M15 10l4.553-2.069A1 1 0 0121 8.87v6.26a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="text-sm">Initializing camera...</span>
+        </div>
+      }
+    </div>
+
+    <!-- Progress bar (during capture) -->
+    @if (status() === 'capturing') {
+      <div class="mt-4">
+        <div class="mb-1 flex justify-between text-xs text-slate-500">
+          <span>Capturing samples</span>
+          <span>{{ sampleCount() }} / {{ requiredSamples }}</span>
+        </div>
+        <div class="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+          <div
+            class="h-full rounded-full bg-sky-500 transition-all duration-300"
+            [style.width.%]="progressPercent"
+          ></div>
+        </div>
+      </div>
+    }
+
+    <!-- Status message -->
+    @if (statusMessage()) {
+      <div
+        class="mt-4 rounded-xl px-4 py-3 text-sm"
+        [class]="{
+          'border border-sky-200 bg-sky-50 text-sky-700': status() === 'capturing' || status() === 'saving',
+          'border border-emerald-200 bg-emerald-50 text-emerald-700': status() === 'done',
+          'border border-rose-200 bg-rose-50 text-rose-700': status() === 'error'
+        }"
+      >
+        {{ statusMessage() }}
+      </div>
+    }
+
+    <!-- Action buttons -->
+    <div class="mt-5 flex gap-3">
+      @if (status() === 'idle') {
+        <button
+          (click)="startCapture()"
+          [disabled]="!modelsLoaded() || !cameraReady()"
+          class="flex-1 rounded-xl bg-sky-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:bg-sky-300"
+        >
+          Start Face Capture
+        </button>
+      }
+
+      @if (status() === 'capturing') {
+        <button
+          disabled
+          class="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-sky-600 px-4 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:bg-sky-400"
+        >
+          <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke-linecap="round"/>
+          </svg>
+          Capturing...
+        </button>
+      }
+
+      @if (status() === 'saving') {
+        <button disabled class="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-sky-600 px-4 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:bg-sky-400">
+          <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke-linecap="round"/>
+          </svg>
+          Saving...
+        </button>
+      }
+
+      @if (status() === 'done') {
+        <button
+          (click)="goToAttendance()"
+          class="flex-1 rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700"
+        >
+          Go to Attendance
+        </button>
+        <button
+          (click)="retryCapture()"
+          class="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+        >
+          Re-register
+        </button>
+      }
+
+      @if (status() === 'error') {
+        <button
+          (click)="retryCapture()"
+          class="flex-1 rounded-xl bg-sky-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-sky-700"
+        >
+          Try Again
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Tips -->
+  <div class="rounded-xl border border-slate-100 bg-slate-50 p-4">
+    <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Tips for best results</p>
+    <ul class="space-y-1 text-sm text-slate-600">
+      <li class="flex items-start gap-2">
+        <span class="mt-0.5 text-sky-500">•</span>
+        Ensure your face is well lit from the front
+      </li>
+      <li class="flex items-start gap-2">
+        <span class="mt-0.5 text-sky-500">•</span>
+        Look directly at the camera
+      </li>
+      <li class="flex items-start gap-2">
+        <span class="mt-0.5 text-sky-500">•</span>
+        Remove glasses if possible for better accuracy
+      </li>
+      <li class="flex items-start gap-2">
+        <span class="mt-0.5 text-sky-500">•</span>
+        Keep your face within the oval guide
+      </li>
+    </ul>
+  </div>
+</div>

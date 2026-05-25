@@ -80,6 +80,7 @@ const PAGE_TITLE_MAP: Record<string, string> = {
   '/dashboard/employee': 'Dashboard',
   '/dashboard/admin': 'Dashboard',
   '/attendance': 'Attendance',
+  '/attendance/register-face': 'Register Face',
   '/dashboard/leave': 'Leave Requests',
   '/dashboard/profile': 'My Profile',
   '/dashboard/employees': 'Employees',

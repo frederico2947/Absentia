@@ -28,4 +28,32 @@ export class UsersService {
   findById(id: string): Promise<User | null> {
     return this.usersRepository.findOne({ where: { id } });
   }
+
+  async saveFaceDescriptors(userId: string, descriptors: number[][]): Promise<void> {
+    await this.usersRepository.update(userId, {
+      faceDescriptors: JSON.stringify(descriptors),
+    });
+  }
+
+  async getAllWithFaceDescriptors(): Promise<{ id: string; name: string; descriptors: number[][] }[]> {
+    const users = await this.usersRepository.find({
+      select: ['id', 'name', 'faceDescriptors'],
+    });
+    return users
+      .filter((u) => u.faceDescriptors)
+      .map((u) => ({
+        id: u.id,
+        name: u.name,
+        descriptors: JSON.parse(u.faceDescriptors!) as number[][],
+      }));
+  }
+
+  async getFaceDescriptors(userId: string): Promise<number[][] | null> {
+    const user = await this.usersRepository.findOne({
+      where: { id: userId },
+      select: ['faceDescriptors'],
+    });
+    if (!user?.faceDescriptors) return null;
+    return JSON.parse(user.faceDescriptors) as number[][];
+  }
 }

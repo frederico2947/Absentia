@@ -19,6 +19,12 @@ export class User {
   @Column()
   name!: string;
 
+  @Column({ default: 'employee' })
+  role!: string;
+
+  @Column({ type: 'text', nullable: true })
+  faceDescriptors!: string | null;
+
   @CreateDateColumn()
   createdAt!: Date;
 }

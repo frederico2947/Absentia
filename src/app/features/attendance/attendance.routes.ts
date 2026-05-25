@@ -8,4 +8,11 @@ export const ATTENDANCE_ROUTES: Routes = [
         (m) => m.AttendanceHome
       ),
   },
+  {
+    path: 'register-face',
+    loadComponent: () =>
+      import('./pages/face-register/face-register').then(
+        (m) => m.FaceRegister
+      ),
+  },
 ];

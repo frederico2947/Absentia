@@ -22,6 +22,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     id: string;
     email: string;
     name: string;
+    role: string;
     createdAt: Date;
   }> {
     const user = await this.usersService.findById(payload.sub);
@@ -34,6 +35,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       id: user.id,
       email: user.email,
       name: user.name,
+      role: user.role,
       createdAt: user.createdAt,
     };
   }
