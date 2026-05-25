@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@source "./**/*.{html,ts}";
 @plugin "@tailwindcss/forms";
 
 /* Global styles */
