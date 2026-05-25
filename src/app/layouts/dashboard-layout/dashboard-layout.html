@@ -1,0 +1,123 @@
+<div class="flex h-screen overflow-hidden bg-slate-50">
+  <!-- Mobile overlay -->
+  @if (sidebarOpen()) {
+    <div
+      class="fixed inset-0 z-20 bg-black/50 lg:hidden"
+      (click)="sidebarOpen.set(false)"
+    ></div>
+  }
+
+  <!-- Sidebar -->
+  <aside
+    [class]="sidebarOpen() ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
+    class="fixed inset-y-0 left-0 z-30 flex w-64 shrink-0 flex-col bg-slate-900 transition-transform duration-300 ease-in-out lg:relative lg:z-auto"
+  >
+    <!-- Brand -->
+    <div class="flex h-16 shrink-0 items-center gap-3 border-b border-slate-700/50 px-6">
+      <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-500">
+        <svg class="h-5 w-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
+        </svg>
+      </div>
+      <span class="text-lg font-bold tracking-wide text-white">Absentia</span>
+    </div>
+
+    <!-- Role badge -->
+    <div class="border-b border-slate-700/50 px-6 py-3">
+      <span
+        class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold uppercase tracking-widest"
+        [class]="isAdmin() ? 'bg-amber-500/20 text-amber-400' : 'bg-sky-500/20 text-sky-400'"
+      >
+        <span
+          class="h-1.5 w-1.5 rounded-full"
+          [class]="isAdmin() ? 'bg-amber-400' : 'bg-sky-400'"
+        ></span>
+        {{ currentUser()?.role | titlecase }}
+      </span>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="flex-1 overflow-y-auto px-3 py-4">
+      @for (item of navItems(); track item.label) {
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="bg-slate-700/70 text-white"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="mb-1 flex items-center gap-3 rounded-xl px-3 py-2.5 text-slate-400 transition-colors hover:bg-slate-700/40 hover:text-white"
+        >
+          <svg
+            class="h-5 w-5 shrink-0"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            @if (isSvgArray(item.svgPath)) {
+              @for (p of item.svgPath; track p) {
+                <path [attr.d]="p" />
+              }
+            } @else {
+              <path [attr.d]="item.svgPath" />
+            }
+          </svg>
+          <span class="text-sm font-medium">{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+
+    <!-- User info + logout -->
+    <div class="shrink-0 border-t border-slate-700/50 p-4">
+      <div class="flex items-center gap-3">
+        <div
+          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
+          [class]="isAdmin() ? 'bg-amber-500' : 'bg-sky-500'"
+        >
+          {{ userInitials() }}
+        </div>
+        <div class="min-w-0 flex-1">
+          <p class="truncate text-sm font-medium text-white">{{ currentUser()?.name }}</p>
+          <p class="truncate text-xs text-slate-400">{{ currentUser()?.email }}</p>
+        </div>
+        <button
+          (click)="logout()"
+          title="Sign out"
+          class="shrink-0 rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-700/60 hover:text-rose-400"
+        >
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main area -->
+  <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
+    <!-- Top header -->
+    <header class="flex h-16 shrink-0 items-center gap-4 border-b border-slate-200 bg-white px-4 lg:px-6">
+      <!-- Hamburger (mobile) -->
+      <button
+        class="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 lg:hidden"
+        (click)="sidebarOpen.set(!sidebarOpen())"
+        aria-label="Toggle sidebar"
+      >
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+
+      <h1 class="flex-1 text-lg font-semibold text-slate-800">{{ pageTitle() }}</h1>
+
+      <time class="hidden text-sm text-slate-500 sm:block">
+        {{ today | date: 'EEEE, MMMM d, y' }}
+      </time>
+    </header>
+
+    <!-- Page content -->
+    <main class="flex-1 overflow-y-auto p-4 lg:p-6">
+      <router-outlet />
+    </main>
+  </div>
+</div>
