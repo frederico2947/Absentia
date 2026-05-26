@@ -14,6 +14,13 @@ export const ATTENDANCE_ROUTES: Routes = [
           ),
       },
       {
+        path: 'history',
+        loadComponent: () =>
+          import('./pages/attendance-history/attendance-history').then(
+            (m) => m.AttendanceHistory
+          ),
+      },
+      {
         path: 'register-face',
         loadComponent: () =>
           import('./pages/face-register/face-register').then(

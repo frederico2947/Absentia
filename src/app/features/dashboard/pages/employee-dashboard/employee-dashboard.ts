@@ -1,22 +1,8 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { AttendanceService, AttendanceRecord } from '../../../../core/services/attendance.service';
 import { AuthService } from '../../../../core/services/auth.service';
-
-type AttendanceRecord = {
-  date: string;
-  checkIn: string;
-  checkOut: string;
-  status: 'present' | 'absent' | 'late' | 'leave';
-};
-
-const MOCK_ATTENDANCE: AttendanceRecord[] = [
-  { date: '2026-05-21', checkIn: '08:02', checkOut: '17:05', status: 'present' },
-  { date: '2026-05-20', checkIn: '08:45', checkOut: '17:00', status: 'late' },
-  { date: '2026-05-19', checkIn: '07:58', checkOut: '17:10', status: 'present' },
-  { date: '2026-05-16', checkIn: '--', checkOut: '--', status: 'leave' },
-  { date: '2026-05-15', checkIn: '08:00', checkOut: '17:00', status: 'present' },
-];
 
 @Component({
   selector: 'app-employee-dashboard',
@@ -24,27 +10,54 @@ const MOCK_ATTENDANCE: AttendanceRecord[] = [
   templateUrl: './employee-dashboard.html',
   styleUrl: './employee-dashboard.scss',
 })
-export class EmployeeDashboard {
+export class EmployeeDashboard implements OnInit {
+  private readonly attendanceService = inject(AttendanceService);
   private readonly authService = inject(AuthService);
 
   readonly currentUser = this.authService.currentUser;
   readonly today = new Date();
-  readonly attendance = MOCK_ATTENDANCE;
+  readonly records = signal<AttendanceRecord[]>([]);
+  readonly loading = signal(true);
 
-  readonly stats = computed(() => ({
-    totalDays: 22,
-    presentDays: 18,
-    absentDays: 1,
-    leaveDays: 3,
-  }));
+  readonly recentRecords = computed(() => this.records().slice(0, 6));
 
-  statusClass(status: AttendanceRecord['status']): string {
-    const map: Record<AttendanceRecord['status'], string> = {
-      present: 'bg-emerald-100 text-emerald-700',
-      late: 'bg-amber-100 text-amber-700',
-      absent: 'bg-rose-100 text-rose-700',
-      leave: 'bg-sky-100 text-sky-700',
+  readonly stats = computed(() => {
+    const now = new Date();
+    const monthRecords = this.records().filter((r) => {
+      const d = new Date(r.timestamp);
+      return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+    });
+    const checkInDays = new Set(
+      monthRecords.filter((r) => r.type === 'check-in').map((r) => new Date(r.timestamp).toDateString()),
+    ).size;
+    const checkOutDays = new Set(
+      monthRecords.filter((r) => r.type === 'check-out').map((r) => new Date(r.timestamp).toDateString()),
+    ).size;
+    return {
+      totalDays: checkInDays,
+      presentDays: checkInDays,
+      completeDays: checkOutDays,
+      totalRecords: this.records().length,
     };
-    return map[status];
+  });
+
+  ngOnInit(): void {
+    this.attendanceService.getMyAttendance().subscribe({
+      next: (data) => {
+        this.records.set(data);
+        this.loading.set(false);
+      },
+      error: () => this.loading.set(false),
+    });
+  }
+
+  typeLabel(record: AttendanceRecord): string {
+    return record.type === 'check-in' ? 'Check In' : 'Check Out';
+  }
+
+  typeClass(record: AttendanceRecord): string {
+    return record.type === 'check-in'
+      ? 'bg-emerald-100 text-emerald-700'
+      : 'bg-sky-100 text-sky-700';
   }
 }

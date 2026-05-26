@@ -8,24 +8,24 @@
 <!-- Stats -->
 <div class="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
   <div class="rounded-2xl bg-white p-5 shadow-sm dark:bg-slate-900 dark:shadow-slate-950/50">
-    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Days</p>
+    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Check-ins</p>
     <p class="mt-2 text-3xl font-bold text-slate-800 dark:text-slate-100">{{ stats().totalDays }}</p>
     <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">This month</p>
   </div>
   <div class="rounded-2xl bg-white p-5 shadow-sm dark:bg-slate-900 dark:shadow-slate-950/50">
-    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Present</p>
+    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Days Present</p>
     <p class="mt-2 text-3xl font-bold text-emerald-600">{{ stats().presentDays }}</p>
-    <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">Days on time</p>
+    <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">Unique days</p>
   </div>
   <div class="rounded-2xl bg-white p-5 shadow-sm dark:bg-slate-900 dark:shadow-slate-950/50">
-    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Absent</p>
-    <p class="mt-2 text-3xl font-bold text-rose-500">{{ stats().absentDays }}</p>
-    <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">Days missed</p>
+    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Full Days</p>
+    <p class="mt-2 text-3xl font-bold text-sky-500">{{ stats().completeDays }}</p>
+    <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">With check-out</p>
   </div>
   <div class="rounded-2xl bg-white p-5 shadow-sm dark:bg-slate-900 dark:shadow-slate-950/50">
-    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">On Leave</p>
-    <p class="mt-2 text-3xl font-bold text-sky-500">{{ stats().leaveDays }}</p>
-    <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">Days approved</p>
+    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Records</p>
+    <p class="mt-2 text-3xl font-bold text-slate-600 dark:text-slate-300">{{ stats().totalRecords }}</p>
+    <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">All time</p>
   </div>
 </div>
 
@@ -44,22 +44,22 @@
         Record Attendance
       </a>
       <a
-        routerLink="/dashboard/leave"
+        routerLink="/attendance/history"
         class="flex items-center gap-3 rounded-xl bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 transition hover:bg-emerald-100 dark:bg-emerald-950/50 dark:text-emerald-400 dark:hover:bg-emerald-900/50"
+      >
+        <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        View My History
+      </a>
+      <a
+        routerLink="/dashboard/leave"
+        class="flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
       >
         <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
         Request Leave
-      </a>
-      <a
-        routerLink="/dashboard/profile"
-        class="flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
-      >
-        <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-        View Profile
       </a>
     </div>
   </div>
@@ -68,35 +68,63 @@
   <div class="rounded-2xl bg-white p-5 shadow-sm dark:bg-slate-900 dark:shadow-slate-950/50 lg:col-span-2">
     <div class="mb-4 flex items-center justify-between">
       <h3 class="text-sm font-semibold text-slate-700 dark:text-slate-200">Recent Attendance</h3>
-      <a routerLink="/attendance" class="text-xs font-medium text-sky-600 hover:text-sky-700">
+      <a routerLink="/attendance/history" class="text-xs font-medium text-sky-600 hover:text-sky-700">
         View all →
       </a>
     </div>
-    <div class="overflow-x-auto">
-      <table class="w-full text-sm">
-        <thead>
-          <tr class="border-b border-slate-100 dark:border-slate-800">
-            <th class="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">Date</th>
-            <th class="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">Check In</th>
-            <th class="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">Check Out</th>
-            <th class="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">Status</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-slate-50 dark:divide-slate-800">
-          @for (record of attendance; track record.date) {
-            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-              <td class="py-3 font-medium text-slate-700 dark:text-slate-200">{{ record.date | date: 'MMM d' }}</td>
-              <td class="py-3 text-slate-500 dark:text-slate-400">{{ record.checkIn }}</td>
-              <td class="py-3 text-slate-500 dark:text-slate-400">{{ record.checkOut }}</td>
-              <td class="py-3">
-                <span class="rounded-full px-2.5 py-1 text-xs font-semibold capitalize {{ statusClass(record.status) }}">
-                  {{ record.status }}
-                </span>
-              </td>
+
+    @if (loading()) {
+      <div class="flex items-center justify-center py-8 text-slate-400">
+        <svg class="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke-linecap="round"/>
+        </svg>
+        <span class="ml-2 text-sm">Loading…</span>
+      </div>
+    } @else if (recentRecords().length === 0) {
+      <div class="flex flex-col items-center justify-center py-8 text-center">
+        <p class="text-sm text-slate-400">No records yet. <a routerLink="/attendance" class="text-sky-600 hover:underline">Record your first attendance →</a></p>
+      </div>
+    } @else {
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-slate-100 dark:border-slate-800">
+              <th class="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">Date</th>
+              <th class="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">Time</th>
+              <th class="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">Type</th>
+              <th class="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">Face</th>
+              <th class="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">Distance</th>
             </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody class="divide-y divide-slate-50 dark:divide-slate-800">
+            @for (record of recentRecords(); track record.id) {
+              <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
+                <td class="py-3 font-medium text-slate-700 dark:text-slate-200">{{ record.timestamp | date: 'MMM d' }}</td>
+                <td class="py-3 text-slate-500 dark:text-slate-400">{{ record.timestamp | date: 'HH:mm' }}</td>
+                <td class="py-3">
+                  <span class="rounded-full px-2 py-0.5 text-xs font-semibold {{ typeClass(record) }}">
+                    {{ typeLabel(record) }}
+                  </span>
+                </td>
+                <td class="py-3 text-slate-500 dark:text-slate-400">
+                  @if (record.faceConfidence !== null) {
+                    {{ (record.faceConfidence * 100).toFixed(0) }}%
+                  } @else {
+                    —
+                  }
+                </td>
+                <td class="py-3 text-slate-500 dark:text-slate-400">
+                  @if (record.distance !== null) {
+                    {{ record.distance }}m
+                  } @else {
+                    —
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
   </div>
 </div>

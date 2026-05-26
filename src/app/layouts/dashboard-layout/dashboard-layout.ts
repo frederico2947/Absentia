@@ -23,6 +23,11 @@ const EMPLOYEE_NAV: NavItem[] = [
     svgPath: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
   },
   {
+    label: 'My History',
+    route: '/attendance/history',
+    svgPath: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01',
+  },
+  {
     label: 'Leave Requests',
     route: '/dashboard/leave',
     svgPath:
@@ -58,6 +63,11 @@ const ADMIN_NAV: NavItem[] = [
     svgPath: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
   },
   {
+    label: 'Attendance Records',
+    route: '/dashboard/attendance-records',
+    svgPath: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01',
+  },
+  {
     label: 'Leave Approvals',
     route: '/dashboard/leave-approvals',
     svgPath: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
@@ -80,12 +90,14 @@ const PAGE_TITLE_MAP: Record<string, string> = {
   '/dashboard/employee': 'Dashboard',
   '/dashboard/admin': 'Dashboard',
   '/attendance': 'Attendance',
+  '/attendance/history': 'My Attendance History',
   '/attendance/register-face': 'Register Face',
   '/dashboard/leave': 'Leave Requests',
   '/dashboard/profile': 'My Profile',
   '/dashboard/employees': 'Employees',
   '/dashboard/leave-approvals': 'Leave Approvals',
   '/dashboard/reports': 'Reports',
+  '/dashboard/attendance-records': 'Attendance Records',
   '/dashboard/settings': 'Settings',
 };
 
