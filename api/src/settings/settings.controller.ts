@@ -11,6 +11,7 @@ import type { Request } from 'express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { SettingsService } from './settings.service';
 import { UpsertOfficeLocationDto } from './dto/upsert-office-location.dto';
+import { UpsertWorkScheduleDto } from './dto/upsert-work-schedule.dto';
 
 type AuthenticatedRequest = Request & {
   user: { id: string; email: string; name: string; role: string };
@@ -39,5 +40,21 @@ export class SettingsController {
       dto.longitude,
       dto.maxDistanceMeters ?? 500,
     );
+  }
+
+  @Get('work-schedule')
+  getWorkSchedule() {
+    return this.settingsService.getWorkSchedule();
+  }
+
+  @Put('work-schedule')
+  async updateWorkSchedule(
+    @Req() req: AuthenticatedRequest,
+    @Body() dto: UpsertWorkScheduleDto,
+  ) {
+    if (req.user.role !== 'admin') {
+      throw new ForbiddenException('Only admins can update work schedule');
+    }
+    return this.settingsService.saveWorkSchedule(dto.workStartHour, dto.lateThresholdMinutes);
   }
 }

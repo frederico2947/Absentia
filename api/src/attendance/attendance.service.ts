@@ -4,6 +4,7 @@ import { Repository, Between } from 'typeorm';
 import { Attendance, AttendanceType } from './attendance.entity';
 import { UsersService } from '../users/users.service';
 import { SettingsService } from '../settings/settings.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { SelectQueryBuilder } from 'typeorm';
 
 @Injectable()
@@ -13,6 +14,7 @@ export class AttendanceService {
     private readonly attendanceRepository: Repository<Attendance>,
     private readonly usersService: UsersService,
     private readonly settingsService: SettingsService,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   private haversineDistance(
@@ -78,7 +80,43 @@ export class AttendanceService {
       distance,
     });
 
-    return this.attendanceRepository.save(attendance);
+    const saved = await this.attendanceRepository.save(attendance);
+
+    if (type === 'check-in') {
+      await this.fireLatCheckInAlerts(userId, user.name, saved.timestamp);
+    }
+
+    return saved;
+  }
+
+  private async fireLatCheckInAlerts(userId: string, userName: string, timestamp: Date): Promise<void> {
+    const { workStartHour, lateThresholdMinutes } = await this.settingsService.getWorkSchedule();
+    const lateMinute = workStartHour * 60 + lateThresholdMinutes;
+    const checkInMinute = timestamp.getHours() * 60 + timestamp.getMinutes();
+
+    if (checkInMinute <= lateMinute) return;
+
+    const alreadyNotified = await this.notificationsService.existsForUserToday(userId, 'late_check_in');
+    if (alreadyNotified) return;
+
+    const lateBy = checkInMinute - lateMinute;
+    const timeStr = timestamp.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+    await this.notificationsService.create({
+      userId,
+      type: 'late_check_in',
+      title: 'Late Check-In',
+      message: `You checked in at ${timeStr}, which is ${lateBy} minute(s) past the ${workStartHour}:${String(lateThresholdMinutes).padStart(2, '0')} deadline.`,
+    });
+
+    const admins = await this.usersService.findAdmins();
+    const adminNotifs = admins.map((admin) => ({
+      userId: admin.id,
+      type: 'late_check_in' as const,
+      title: 'Late Check-In Alert',
+      message: `${userName} checked in at ${timeStr}, ${lateBy} minute(s) late.`,
+    }));
+    await this.notificationsService.createMany(adminNotifs);
   }
 
   async getByUser(userId: string): Promise<Attendance[]> {

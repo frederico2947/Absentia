@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { DatePipe, TitleCasePipe } from '@angular/common';
+import { TitleCasePipe } from '@angular/common';
 import { UsersService, Employee, CreateEmployeePayload, UpdateEmployeePayload } from '../../../../core/services/users.service';
 import { AuthService } from '../../../../core/services/auth.service';
 
@@ -15,7 +15,7 @@ type EmployeeForm = {
 
 @Component({
   selector: 'app-employees',
-  imports: [FormsModule, DatePipe, TitleCasePipe],
+  imports: [FormsModule, TitleCasePipe],
   templateUrl: './employees.html',
   styleUrl: './employees.scss',
 })

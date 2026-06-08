@@ -79,6 +79,13 @@ export class UsersService {
     await this.usersRepository.remove(user);
   }
 
+  async findAdmins(): Promise<{ id: string; name: string; email: string; role: string }[]> {
+    return this.usersRepository.find({
+      where: { role: 'admin' },
+      select: ['id', 'name', 'email', 'role'],
+    });
+  }
+
   async findAll(): Promise<{ id: string; name: string; email: string; role: string }[]> {
     return this.usersRepository.find({
       select: ['id', 'name', 'email', 'role'],

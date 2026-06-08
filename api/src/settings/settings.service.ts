@@ -9,6 +9,16 @@ export type OfficeLocation = {
   maxDistanceMeters: number;
 };
 
+export type WorkSchedule = {
+  workStartHour: number;
+  lateThresholdMinutes: number;
+};
+
+const WORK_DEFAULTS: WorkSchedule = {
+  workStartHour: 9,
+  lateThresholdMinutes: 15,
+};
+
 const DEFAULTS: OfficeLocation = {
   latitude: -6.2088,
   longitude: 106.8456,
@@ -56,5 +66,24 @@ export class SettingsService {
       this.set('maxDistanceMeters', String(maxDistanceMeters)),
     ]);
     return { latitude, longitude, maxDistanceMeters };
+  }
+
+  async getWorkSchedule(): Promise<WorkSchedule> {
+    const [startHour, lateMin] = await Promise.all([
+      this.get('workStartHour'),
+      this.get('lateThresholdMinutes'),
+    ]);
+    return {
+      workStartHour: startHour !== null ? parseInt(startHour, 10) : WORK_DEFAULTS.workStartHour,
+      lateThresholdMinutes: lateMin !== null ? parseInt(lateMin, 10) : WORK_DEFAULTS.lateThresholdMinutes,
+    };
+  }
+
+  async saveWorkSchedule(workStartHour: number, lateThresholdMinutes: number): Promise<WorkSchedule> {
+    await Promise.all([
+      this.set('workStartHour', String(workStartHour)),
+      this.set('lateThresholdMinutes', String(lateThresholdMinutes)),
+    ]);
+    return { workStartHour, lateThresholdMinutes };
   }
 }

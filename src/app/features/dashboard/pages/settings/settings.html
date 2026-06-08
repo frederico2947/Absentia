@@ -108,6 +108,61 @@
       </div>
     </div>
 
+    <!-- Work Schedule card -->
+    <div class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <div class="border-b border-slate-100 px-6 py-4 dark:border-slate-800">
+        <div class="flex items-center gap-3">
+          <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-100 text-amber-600 dark:bg-amber-950/70">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div>
+            <h2 class="font-semibold text-slate-800 dark:text-slate-100">Work Schedule & Alerts</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Configure when the workday starts and the late-check-in threshold for notifications.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-5 p-6">
+        <!-- Work Start Hour -->
+        <div>
+          <label class="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">
+            Work Start Hour
+            <span class="ml-1 font-normal text-slate-400">(0–23)</span>
+          </label>
+          <input
+            type="number"
+            min="0"
+            max="23"
+            [(ngModel)]="workStartHour"
+            class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-100 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:border-sky-500 dark:focus:ring-sky-900/30"
+            placeholder="9"
+          />
+          <p class="mt-1 text-xs text-slate-400">The official start of the workday (e.g. 9 = 09:00 AM).</p>
+        </div>
+
+        <!-- Late Threshold -->
+        <div>
+          <label class="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">
+            Late Threshold
+            <span class="ml-1 font-normal text-slate-400">(minutes after start)</span>
+          </label>
+          <input
+            type="number"
+            min="0"
+            max="120"
+            [(ngModel)]="lateThresholdMinutes"
+            class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-100 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:border-sky-500 dark:focus:ring-sky-900/30"
+            placeholder="15"
+          />
+          <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">
+            Check-ins after <strong class="text-slate-600 dark:text-slate-300">{{ lateDeadlineLabel }}</strong> will trigger a late-check-in alert. Set to 0 for no grace period.
+          </p>
+        </div>
+      </div>
+    </div>
+
     <!-- Save feedback -->
     @if (saveStatus() === 'saved') {
       <div class="flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-400">

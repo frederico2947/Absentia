@@ -1,8 +1,9 @@
 import { DatePipe, TitleCasePipe } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
+import { NotificationsService, AppNotification } from '../../core/services/notifications.service';
 
 type NavItem = {
   label: string;
@@ -107,14 +108,16 @@ const PAGE_TITLE_MAP: Record<string, string> = {
   templateUrl: './dashboard-layout.html',
   styleUrl: './dashboard-layout.scss',
 })
-export class DashboardLayout {
+export class DashboardLayout implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  readonly notificationsService = inject(NotificationsService);
 
   readonly currentUser = this.authService.currentUser;
   readonly sidebarOpen = signal(false);
   readonly today = new Date();
   readonly pageTitle = signal('Dashboard');
+  readonly notifPanelOpen = signal(false);
 
   readonly navItems = computed<NavItem[]>(() => {
     const role = this.currentUser()?.role;
@@ -133,6 +136,10 @@ export class DashboardLayout {
 
   readonly isAdmin = computed(() => this.currentUser()?.role === 'admin');
 
+  ngOnInit(): void {
+    this.notificationsService.fetch().subscribe();
+  }
+
   constructor() {
     this.router.events
       .pipe(filter((e) => e instanceof NavigationEnd))
@@ -140,11 +147,24 @@ export class DashboardLayout {
         const url = (e as NavigationEnd).urlAfterRedirects.split('?')[0];
         this.pageTitle.set(PAGE_TITLE_MAP[url] ?? 'Dashboard');
         this.sidebarOpen.set(false);
+        this.notifPanelOpen.set(false);
       });
   }
 
   isSvgArray(path: string | string[]): path is string[] {
     return Array.isArray(path);
+  }
+
+  notifTypeIcon(type: AppNotification['type']): string {
+    return type === 'late_check_in'
+      ? 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'
+      : 'M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z';
+  }
+
+  notifTypeClass(type: AppNotification['type']): string {
+    return type === 'late_check_in'
+      ? 'text-amber-500'
+      : 'text-rose-500';
   }
 
   logout(): void {
