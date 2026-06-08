@@ -33,6 +33,15 @@ export const DASHBOARD_ROUTES: Routes = [
           ),
       },
       {
+        path: 'employees',
+        canActivate: [roleGuard(['admin'])],
+        data: { title: 'Employees' },
+        loadComponent: () =>
+          import('./pages/employees/employees').then(
+            (m) => m.Employees,
+          ),
+      },
+      {
         path: 'attendance-records',
         canActivate: [roleGuard(['admin'])],
         data: { title: 'Attendance Records' },

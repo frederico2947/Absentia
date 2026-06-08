@@ -1,0 +1,293 @@
+<!-- Header: search + add button -->
+<div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+  <div class="relative max-w-xs flex-1">
+    <svg
+      class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+      viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    >
+      <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35" stroke-linecap="round"/>
+    </svg>
+    <input
+      type="text"
+      placeholder="Search employees…"
+      [value]="searchQuery()"
+      (input)="searchQuery.set($any($event.target).value)"
+      class="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-9 pr-4 text-sm text-slate-800 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-100 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-sky-500"
+    />
+  </div>
+  <button
+    type="button"
+    (click)="openCreateModal()"
+    class="inline-flex items-center gap-2 rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700 active:scale-95"
+  >
+    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 5v14M5 12h14" stroke-linecap="round"/>
+    </svg>
+    Add Employee
+  </button>
+</div>
+
+<!-- Error banner -->
+@if (error()) {
+  <div class="mb-4 flex items-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-400">
+    <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    {{ error() }}
+  </div>
+}
+
+<!-- Loading -->
+@if (loading()) {
+  <div class="flex items-center justify-center py-20 text-slate-400">
+    <svg class="h-6 w-6 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke-linecap="round"/>
+    </svg>
+    <span class="ml-2 text-sm">Loading employees…</span>
+  </div>
+} @else {
+  <!-- Stats summary -->
+  <div class="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
+    <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Total</p>
+      <p class="mt-1 text-2xl font-bold text-slate-800 dark:text-slate-100">{{ employees().length }}</p>
+    </div>
+    <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Employees</p>
+      <p class="mt-1 text-2xl font-bold text-sky-600">{{ employeeCount() }}</p>
+    </div>
+    <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 col-span-2 sm:col-span-1">
+      <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Admins</p>
+      <p class="mt-1 text-2xl font-bold text-amber-600">{{ adminCount() }}</p>
+    </div>
+  </div>
+
+  <!-- Table card -->
+  <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+    @if (filteredEmployees().length === 0) {
+      <div class="flex flex-col items-center justify-center gap-2 py-16 text-slate-400">
+        <svg class="h-10 w-10 opacity-40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <p class="text-sm">No employees found.</p>
+      </div>
+    } @else {
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-slate-100 dark:border-slate-800">
+              <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Name</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Email</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Role</th>
+              <th class="px-4 py-3"></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (emp of filteredEmployees(); track emp.id) {
+              <tr class="border-b border-slate-50 transition hover:bg-slate-50 dark:border-slate-800/50 dark:hover:bg-slate-800/30 last:border-0">
+                <td class="px-4 py-3">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
+                      [class]="emp.role === 'admin' ? 'bg-amber-500' : 'bg-sky-500'"
+                    >
+                      {{ emp.name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase() }}
+                    </div>
+                    <span class="font-medium text-slate-800 dark:text-slate-100">
+                      {{ emp.name }}
+                      @if (isCurrentUser(emp.id)) {
+                        <span class="ml-1.5 rounded-full bg-sky-100 px-1.5 py-0.5 text-[10px] font-semibold text-sky-700 dark:bg-sky-950 dark:text-sky-400">You</span>
+                      }
+                    </span>
+                  </div>
+                </td>
+                <td class="px-4 py-3 text-slate-600 dark:text-slate-400">{{ emp.email }}</td>
+                <td class="px-4 py-3">
+                  <span
+                    class="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold"
+                    [class]="emp.role === 'admin' ? 'bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400' : 'bg-sky-100 text-sky-700 dark:bg-sky-950/50 dark:text-sky-400'"
+                  >
+                    {{ emp.role | titlecase }}
+                  </span>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="flex items-center justify-end gap-2">
+                    <button
+                      type="button"
+                      (click)="openEditModal(emp)"
+                      title="Edit"
+                      class="rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+                    >
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
+                      (click)="confirmDelete(emp)"
+                      [disabled]="isCurrentUser(emp.id)"
+                      title="Delete"
+                      class="rounded-lg p-1.5 text-slate-400 transition hover:bg-rose-50 hover:text-rose-600 disabled:cursor-not-allowed disabled:opacity-30 dark:hover:bg-rose-950/30 dark:hover:text-rose-400"
+                    >
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+}
+
+<!-- Create / Edit Modal -->
+@if (showModal()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+    <div class="w-full max-w-md rounded-2xl bg-white shadow-2xl dark:bg-slate-900">
+      <!-- Modal header -->
+      <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4 dark:border-slate-800">
+        <h2 class="text-base font-semibold text-slate-800 dark:text-slate-100">
+          {{ modalMode() === 'create' ? 'Add Employee' : 'Edit Employee' }}
+        </h2>
+        <button
+          type="button"
+          (click)="closeModal()"
+          class="rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-100 dark:hover:bg-slate-800"
+        >
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 18L18 6M6 6l12 12" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="space-y-4 p-6">
+        <!-- Name -->
+        <div>
+          <label class="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">Full Name</label>
+          <input
+            type="text"
+            [(ngModel)]="form.name"
+            placeholder="Jane Doe"
+            class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-100 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:border-sky-500 dark:focus:ring-sky-900/30"
+          />
+        </div>
+
+        <!-- Email (only on create) -->
+        @if (modalMode() === 'create') {
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">Email</label>
+            <input
+              type="email"
+              [(ngModel)]="form.email"
+              placeholder="jane@company.com"
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-100 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:border-sky-500 dark:focus:ring-sky-900/30"
+            />
+          </div>
+
+          <!-- Password (only on create) -->
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">Initial Password</label>
+            <input
+              type="password"
+              [(ngModel)]="form.password"
+              placeholder="min. 6 characters"
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-100 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:border-sky-500 dark:focus:ring-sky-900/30"
+            />
+          </div>
+        }
+
+        <!-- Role -->
+        <div>
+          <label class="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">Role</label>
+          <select
+            [(ngModel)]="form.role"
+            class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-100 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:border-sky-500 dark:focus:ring-sky-900/30"
+          >
+            <option value="employee">Employee</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+
+        <!-- Save error -->
+        @if (saveError()) {
+          <div class="flex items-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-400">
+            <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            {{ saveError() }}
+          </div>
+        }
+      </div>
+
+      <!-- Modal footer -->
+      <div class="flex justify-end gap-3 border-t border-slate-100 px-6 py-4 dark:border-slate-800">
+        <button
+          type="button"
+          (click)="closeModal()"
+          class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          (click)="submitForm()"
+          [disabled]="saving()"
+          class="inline-flex items-center gap-2 rounded-xl bg-sky-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          @if (saving()) {
+            <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke-linecap="round"/>
+            </svg>
+          }
+          {{ modalMode() === 'create' ? 'Create' : 'Save Changes' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Delete confirmation dialog -->
+@if (showDeleteConfirm()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+    <div class="w-full max-w-sm rounded-2xl bg-white shadow-2xl dark:bg-slate-900">
+      <div class="p-6 text-center">
+        <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-rose-100 dark:bg-rose-950/50">
+          <svg class="h-6 w-6 text-rose-600 dark:text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h2 class="mb-1 text-base font-semibold text-slate-800 dark:text-slate-100">Delete Employee</h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400">
+          Are you sure you want to delete <strong class="text-slate-700 dark:text-slate-200">{{ deleteTargetName() }}</strong>? This action cannot be undone.
+        </p>
+      </div>
+      <div class="flex gap-3 border-t border-slate-100 px-6 py-4 dark:border-slate-800">
+        <button
+          type="button"
+          (click)="cancelDelete()"
+          class="flex-1 rounded-xl border border-slate-200 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          (click)="executeDelete()"
+          [disabled]="deleting()"
+          class="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-rose-600 py-2 text-sm font-semibold text-white transition hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          @if (deleting()) {
+            <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke-linecap="round"/>
+            </svg>
+          }
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+}
