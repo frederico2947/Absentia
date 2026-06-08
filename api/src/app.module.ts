@@ -10,7 +10,7 @@ import { NotificationsModule } from './notifications/notifications.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'sqlite',
-      database: 'absentia.db',
+      database: process.env['DB_PATH'] ?? 'absentia.db',
       autoLoadEntities: true,
       synchronize: true,
     }),

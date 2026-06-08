@@ -1,0 +1,32 @@
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      PORT: "3000"
+      CORS_ORIGIN: "http://localhost"
+      DB_PATH: "/data/absentia.db"
+      ABSENTIA_JWT_SECRET: "${ABSENTIA_JWT_SECRET:-change-me-in-production}"
+    volumes:
+      - db_data:/data
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/auth/me"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+
+volumes:
+  db_data:

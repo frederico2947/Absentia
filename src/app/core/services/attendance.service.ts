@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export type AttendanceRecord = {
   id: string;
@@ -35,7 +36,7 @@ export type EmployeeUser = {
 @Injectable({ providedIn: 'root' })
 export class AttendanceService {
   private readonly http = inject(HttpClient);
-  private readonly API_URL = 'http://localhost:3000';
+  private readonly API_URL = environment.apiUrl;
 
   record(type: 'check-in' | 'check-out', faceConfidence?: number, latitude?: number, longitude?: number): Observable<AttendanceRecord> {
     return this.http.post<AttendanceRecord>(`${this.API_URL}/attendance`, {

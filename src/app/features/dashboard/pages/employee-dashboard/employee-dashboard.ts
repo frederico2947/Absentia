@@ -18,6 +18,7 @@ export class EmployeeDashboard implements OnInit {
   readonly today = new Date();
   readonly records = signal<AttendanceRecord[]>([]);
   readonly loading = signal(true);
+  readonly error = signal('');
 
   readonly recentRecords = computed(() => this.records().slice(0, 6));
 
@@ -47,7 +48,10 @@ export class EmployeeDashboard implements OnInit {
         this.records.set(data);
         this.loading.set(false);
       },
-      error: () => this.loading.set(false),
+      error: () => {
+        this.error.set('Failed to load attendance data.');
+        this.loading.set(false);
+      },
     });
   }
 

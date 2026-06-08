@@ -6,10 +6,12 @@ import { AppModule } from './app.module';
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
 
+  const corsOrigin = process.env['CORS_ORIGIN'] ?? 'http://localhost:4200';
   app.enableCors({
-    origin: 'http://localhost:4200',
+    origin: corsOrigin,
     credentials: true,
   });
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -18,7 +20,9 @@ async function bootstrap(): Promise<void> {
     }),
   );
 
-  await app.listen(3000);
+  const port = parseInt(process.env['PORT'] ?? '3000', 10);
+  await app.listen(port);
+  console.log(`API running on port ${port} (CORS: ${corsOrigin})`);
 }
 
 void bootstrap();

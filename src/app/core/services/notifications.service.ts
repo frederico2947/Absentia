@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { Observable, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export type AppNotification = {
   id: string;
@@ -15,7 +16,7 @@ export type AppNotification = {
 @Injectable({ providedIn: 'root' })
 export class NotificationsService {
   private readonly http = inject(HttpClient);
-  private readonly API_URL = 'http://localhost:3000';
+  private readonly API_URL = environment.apiUrl;
 
   readonly notifications = signal<AppNotification[]>([]);
   readonly unreadCount = computed(() => this.notifications().filter((n) => !n.isRead).length);

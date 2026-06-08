@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export type OfficeLocation = {
   latitude: number;
@@ -16,7 +17,7 @@ export type WorkSchedule = {
 @Injectable({ providedIn: 'root' })
 export class SettingsService {
   private readonly http = inject(HttpClient);
-  private readonly API_URL = 'http://localhost:3000';
+  private readonly API_URL = environment.apiUrl;
 
   getOfficeLocation(): Observable<OfficeLocation> {
     return this.http.get<OfficeLocation>(`${this.API_URL}/settings/office-location`);

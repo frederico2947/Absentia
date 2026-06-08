@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export type Employee = {
   id: string;
@@ -24,7 +25,7 @@ export type UpdateEmployeePayload = {
 @Injectable({ providedIn: 'root' })
 export class UsersService {
   private readonly http = inject(HttpClient);
-  private readonly API_URL = 'http://localhost:3000';
+  private readonly API_URL = environment.apiUrl;
 
   getAll(): Observable<Employee[]> {
     return this.http.get<Employee[]>(`${this.API_URL}/users`);

@@ -34,6 +34,7 @@ export class AdminDashboard implements OnInit {
   readonly leaveRequests = MOCK_LEAVE_REQUESTS;
   readonly allRecords = signal<AttendanceRecord[]>([]);
   readonly loading = signal(true);
+  readonly error = signal('');
 
   readonly todayCheckIns = computed(() => {
     const todayStr = new Date().toDateString();
@@ -64,7 +65,10 @@ export class AdminDashboard implements OnInit {
         this.allRecords.set(data);
         this.loading.set(false);
       },
-      error: () => this.loading.set(false),
+      error: () => {
+        this.error.set('Failed to load attendance data.');
+        this.loading.set(false);
+      },
     });
   }
 

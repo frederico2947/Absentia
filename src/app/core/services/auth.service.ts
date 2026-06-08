@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, catchError, map, switchMap, tap, throwError } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 type AuthResponse = {
   access_token: string;
@@ -18,7 +19,7 @@ export type AuthUser = {
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly TOKEN_KEY = 'absentia_token';
-  private readonly API_URL = 'http://localhost:3000';
+  private readonly API_URL = environment.apiUrl;
 
   readonly currentUser = signal<AuthUser | null>(null);
 
